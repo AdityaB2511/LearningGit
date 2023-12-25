@@ -18,7 +18,7 @@ function App() {
         >
           Learn React
         </a>
-        <h5>This my project to learn git using command.</h5>
+        <h5>This is master</h5>
       </header>
     </div>
   );
