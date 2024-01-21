@@ -9,7 +9,7 @@ import Container from './Container';
 function App() {
   return (
     <div className="App">
-      <MenuBar key={"MenuBar"}></MenuBar>
+      {/* <MenuBar key={"MenuBar"}></MenuBar> */}
       <Container Component="Pokemon"></Container>
     </div>
   );

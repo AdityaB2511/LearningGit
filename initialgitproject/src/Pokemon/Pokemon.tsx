@@ -12,6 +12,7 @@ import {
   IDropdownOption,
   SelectionMode,
   TextField,
+  Toggle,
   TooltipHost,
 } from "office-ui-fabric-react";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
@@ -19,12 +20,15 @@ import { Toast } from "primereact/toast";
 import ConfirmationEx from "../CustomDialog/ConfirmDialog";
 import userEvent from "@testing-library/user-event";
 import ImageUpload from "../Common/ImageUpload";
+import PokeTileView from "./PokemonTileView";
+import PokeSearch from "./PokeSearch";
 
 interface PokemonState {
   IsAddFormVisible: boolean;
   PokeData: Array<any>;
   SelectedPokemon: Pokemon;
   PokemonTypes: Array<{ key: number; text: string }>;
+  IsListViewVisible: boolean;
 }
 
 interface Pokemon {
@@ -35,6 +39,7 @@ interface Pokemon {
   IsActive: boolean;
   NameErrorMsg: string;
   TypeErrorMsg: string;
+  ImageUrl: string;
 }
 
 const InitialPokemon = {
@@ -45,6 +50,7 @@ const InitialPokemon = {
   IsActive: true,
   NameErrorMsg: "",
   TypeErrorMsg: "",
+  ImageUrl: "",
 } as Pokemon;
 
 const InitialPokeSate: PokemonState = {
@@ -52,6 +58,7 @@ const InitialPokeSate: PokemonState = {
   PokeData: [],
   SelectedPokemon: InitialPokemon,
   PokemonTypes: [],
+  IsListViewVisible: true,
 };
 
 function Pokemon() {
@@ -249,6 +256,7 @@ function Pokemon() {
         Name: AllPokemonsState.SelectedPokemon.Name,
         IsActive: true,
         Description: AllPokemonsState.SelectedPokemon.Description,
+        ImageUrl: AllPokemonsState.SelectedPokemon.ImageUrl,
         PokemonTypeMappings:
           AllPokemonsState.SelectedPokemon.SelectedPokemonTypes.map(
             (key: number) => {
@@ -279,6 +287,27 @@ function Pokemon() {
     return isValid;
   }
 
+  function OnToggleChange() {
+    SetPokemons((prevState) => {
+      return {
+        ...prevState,
+        IsListViewVisible: !prevState.IsListViewVisible,
+      };
+    });
+  }
+
+  function OnImageUrlChange(e: any) {
+    let selectedPokemon = AllPokemonsState.SelectedPokemon;
+    let currentState = {
+      ...AllPokemonsState,
+      SelectedPokemon: {
+        ...selectedPokemon,
+        ImageUrl: e.target.value,
+      },
+    } as PokemonState;
+    SetPokemons(currentState);
+  }
+
   function OnEdit(pokemon: any) {
     SetPokemons((prevState) => {
       return {
@@ -287,6 +316,7 @@ function Pokemon() {
           Id: pokemon.id,
           Name: pokemon.name,
           Description: pokemon.description,
+          ImageUrl: pokemon.imageUrl,
           SelectedPokemonTypes: pokemon.pokemonTypeMappings.map((item: any) => {
             return item.typeId;
           }),
@@ -297,17 +327,7 @@ function Pokemon() {
     });
   }
   return (
-    <div>
-      <ConfirmationEx
-        DisplayMessage=""
-        Header=""
-        button1={() => {
-          alert("accept");
-        }}
-        button2={() => {
-          alert("reject");
-        }}
-      />
+    <div className="mrg">
       <div className="row">
         {AllPokemonsState.IsAddFormVisible ? (
           <>
@@ -398,9 +418,21 @@ function Pokemon() {
               errorMessage={AllPokemonsState.SelectedPokemon.TypeErrorMsg}
             ></Dropdown>
           </div>
-          {/* <div className="row">
-                    <ImageUpload></ImageUpload>
-                </div> */}
+          <div className="row col-md-6">
+            <div className="col-md-4">
+              <TextField
+                label="Image Url"
+                value={AllPokemonsState.SelectedPokemon.ImageUrl}
+                onChange={OnImageUrlChange}
+              />
+            </div>
+            <div className="col-md-4">
+              <img
+                src={AllPokemonsState.SelectedPokemon.ImageUrl}
+                style={{ width: "100px", height: "100px" }}
+              ></img>
+            </div>
+          </div>
 
           <div>
             <button className="btn btn-primary btn-sm" onClick={OnSave}>
@@ -409,12 +441,23 @@ function Pokemon() {
           </div>
         </div>
       ) : (
-        <DetailsList
-          items={AllPokemonsState.PokeData}
-          selectionMode={SelectionMode.none}
-          onRenderItemColumn={OnRenderColumn}
-          columns={Columns}
-        ></DetailsList>
+        <>
+          <PokeSearch OnToggleChange={OnToggleChange} />
+          {AllPokemonsState.IsListViewVisible ? (
+            AllPokemonsState.PokeData.length > 0 ? (
+              <DetailsList
+                items={AllPokemonsState.PokeData}
+                selectionMode={SelectionMode.none}
+                onRenderItemColumn={OnRenderColumn}
+                columns={Columns}
+              ></DetailsList>
+            ) : (
+              <h4>No Data Available</h4>
+            )
+          ) : (
+            <PokeTileView Data={AllPokemonsState.PokeData} />
+          )}
+        </>
       )}
     </div>
   );
