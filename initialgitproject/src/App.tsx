@@ -1,26 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { ReactTagPicker } from './TagPicker';
+import MenuBar from './Components/MenuBar';
+import Container from './Container';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <h5>This is master</h5>
-        <h5>This is Working Branch </h5>
-      </header>
+      <MenuBar key={"MenuBar"}></MenuBar>
+      <Container Component="Pokemon"></Container>
     </div>
   );
 }

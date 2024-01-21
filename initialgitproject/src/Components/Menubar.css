@@ -1,0 +1,20 @@
+.MenubarItem{
+    background-color: lightblue;
+    border: 1px;
+    width: 10%;
+    border-radius: 10px;
+    height: 30px;
+
+}
+
+.MenuBar{
+    padding: 0px;
+    margin: 0px;
+    height: 30%;
+    width: 100%;
+}
+
+.MenuBar ul{
+    padding: 0px;
+    margin: 5px;
+}
